@@ -4,8 +4,9 @@ import connection from '../database/database.js'
 async function getCategories(req, res) {
 
     try {
-        
+
         const categories = (await connection.query('SELECT * FROM categories;')).rows;
+        console.log(categories);
         res.status(STATUS_CODE.OK).send(categories);
 
     } catch (error) {
@@ -15,6 +16,14 @@ async function getCategories(req, res) {
 
 }
 
+async function postCategories(req, res) {
+
+    const { name } = res.locals.name;
 
 
-export { getCategories }
+    res.send(name);
+}
+
+
+
+export { getCategories, postCategories }

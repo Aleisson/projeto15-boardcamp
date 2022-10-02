@@ -1,9 +1,9 @@
-import Joi, { string } from 'joi';
+import Joi from 'joi';
 
-const postCategoriasSchema = Joi.object({
+const postCategoriesSchema = Joi.object({
 
     name: Joi.string().required(),
 
 });
 
-export { postCategoriasSchema }
+export { postCategoriesSchema }
