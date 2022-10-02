@@ -20,8 +20,9 @@ async function postCategories(req, res) {
 
     const { name } = res.locals.name;
 
+    await connection.query('INSERT INTO categories (name) VALUES ($1);',[name]);
 
-    res.send(name);
+    res.sendStatus(STATUS_CODE.CREATED);
 }
 
 

@@ -15,10 +15,11 @@ async function postCategoriaMiddleWare(req, res, next) {
 
     try {
 
-        const checkName = await (await connection.query('SELECT * FROM categories WHERE name = $1', [name])).rows;
-        console.log(checkName);
+        const checkName = await connection.query('SELECT * FROM categories WHERE name = $1', [name]);
+       
+
         
-        if (checkName.length) {
+        if (checkName.rowCount) {
             return res.sendStatus(STATUS_CODE.CONFLICT);
         }
 
