@@ -1,10 +1,12 @@
-import { STATUS_CODE } from '../enums/statusCode.enum.js'
+import { STATUS_CODE } from '../Enums/statusCode.Enum.js'
+import connection from '../database/database.js'
 
-async function getCategorias(req, res) {
+async function getCategories(req, res) {
 
     try {
-        console.log("aqui");    
-        res.status(STATUS_CODE.NOT_IMPLEMENTED).send("<h1>GET CATEGORIAS</h1>");
+        
+        const categories = (await connection.query('SELECT * FROM categories;')).rows;
+        res.status(STATUS_CODE.OK).send(categories);
 
     } catch (error) {
         console.error(error);
@@ -13,4 +15,6 @@ async function getCategorias(req, res) {
 
 }
 
-export { getCategorias }
+
+
+export { getCategories }
