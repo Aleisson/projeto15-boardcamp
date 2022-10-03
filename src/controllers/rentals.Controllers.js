@@ -30,6 +30,7 @@ async function getRentals(req, res) {
                     gameId: rent.gameId,
                     rentDate: dayjs(rent.rentDate).format('YYYY-MM-DD'),
                     daysRented: rent.daysRented,
+                    returnDate: rent.returnDate,
                     originalPrice: rent.originalPrice,
                     delayFee: rent.delayFee,
                     customer: {
@@ -66,6 +67,7 @@ async function getRentals(req, res) {
                     gameId: rent.gameId,
                     rentDate: dayjs(rent.rentDate).format('YYYY-MM-DD'),
                     daysRented: rent.daysRented,
+                    returnDate: rent.returnDate,
                     originalPrice: rent.originalPrice,
                     delayFee: rent.delayFee,
                     customer: {
@@ -100,6 +102,7 @@ async function getRentals(req, res) {
                 gameId: rent.gameId,
                 rentDate: dayjs(rent.rentDate).format('YYYY-MM-DD'),
                 daysRented: rent.daysRented,
+                returnDate: rent.returnDate,
                 originalPrice: rent.originalPrice,
                 delayFee: rent.delayFee,
                 customer: {
@@ -123,7 +126,7 @@ async function getRentals(req, res) {
 
 }
 
-async function postRentals(req, res) {
+function postRentals(req, res) {
 
     const customer = res.locals.customer;
     const game = res.locals.game;
@@ -155,4 +158,36 @@ async function postRentals(req, res) {
 
 }
 
-export { getRentals, postRentals }
+async function postRentalsIdReturn(req, res) {
+
+
+    const rent = res.locals.rent;
+    console.log(rent);
+    rent.returnDate = dayjs().format('YYYY-MM-DD')
+
+    //console.log(rent.returnDate)
+    if (dayjs().diff(dayjs(rent.rentDate)) > 0) {
+        rent.delayFee = Math.trunc((rent.originalPrice / rent.daysRented))
+            * Math.trunc(dayjs().diff(dayjs(rent.rentDate))
+                / (1000 * 3600 * 24)) * 2;
+    }
+
+    try {
+
+        connection.query(`UPDATE 
+                            rentals SET 
+                            "returnDate"= $1,
+                            "delayFee"= $2 
+                            WHERE id = $3`,
+            [rent.returnDate,
+            rent.delayFee,
+            rent.id])
+        return res.sendStatus(STATUS_CODE.OK);
+    } catch (error) {
+        console.error(error);
+        return res.sendStatus(STATUS_CODE.SERVER_ERROR);
+    }
+
+}
+
+export { getRentals, postRentals, postRentalsIdReturn }
