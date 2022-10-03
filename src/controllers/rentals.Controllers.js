@@ -167,7 +167,7 @@ async function postRentalsIdReturn(req, res) {
 
     //console.log(rent.returnDate)
     if (dayjs().diff(dayjs(rent.rentDate).add(rent.daysRented)) > 0) {
-       d rent.delayFee = Math.trunc((rent.originalPrice / rent.daysRented))
+        rent.delayFee = Math.trunc((rent.originalPrice / rent.daysRented))
             * Math.trunc(dayjs().diff(dayjs(rent.rentDate))
                 / (1000 * 3600 * 24)) * 2;
     }
@@ -190,4 +190,21 @@ async function postRentalsIdReturn(req, res) {
 
 }
 
-export { getRentals, postRentals, postRentalsIdReturn }
+async function deleteRentals(req, res) {
+
+    const { id } = res.locals.id;
+
+    try {
+
+        connection.query(`DELETE FROM rentals WHERE id = $1`, [id]);
+
+        return res.sendStatus(STATUS_CODE.OK);
+
+    } catch (error) {
+        console.error(error);
+        return res.sendStatus(STATUS_CODE.SERVER_ERROR);
+    }
+
+}
+
+export { getRentals, postRentals, postRentalsIdReturn, deleteRentals }

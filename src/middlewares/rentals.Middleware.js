@@ -45,7 +45,7 @@ async function postRentalsMiddleware(req, res, next) {
 async function postRentalsIdReturnMiddleware(req, res, next) {
 
     const { id } = req.params;
-    
+
     try {
 
         const rent = await connection
@@ -70,4 +70,33 @@ async function postRentalsIdReturnMiddleware(req, res, next) {
 
 }
 
-export { postRentalsMiddleware, postRentalsIdReturnMiddleware }
+
+async function deleteRetalsIdMiddleware(req, res, next) {
+
+
+    const { id } = req.params;
+
+    try {
+
+        const rent = await connection
+            .query('SELECT * FROM rentals WHERE id = $1', [id]);
+
+        if (!rent.rowCount) {
+            return res.sendStatus(STATUS_CODE.NOT_FOUND);
+        }
+
+        if (!rent.rows.at(0).returnDate) {
+            return res.sendStatus(STATUS_CODE.BAD_REQUEST);
+        }
+
+        res.locals.id = { id };
+        next();
+
+    } catch (error) {
+        console.log(error);
+        return res.sendStatus(STATUS_CODE.SERVER_ERROR);
+    }
+
+}
+
+export { postRentalsMiddleware, postRentalsIdReturnMiddleware, deleteRetalsIdMiddleware }
