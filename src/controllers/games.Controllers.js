@@ -28,4 +28,31 @@ async function getGames(req, res) {
 
 }
 
-export { getGames }
+async function postGames(req, res) {
+
+    const { name, image, stockTotal, categoryId, pricePerDay } = res.locals.games;
+
+    try {
+
+        connection
+            .query(`INSERT INTO games (
+                name, 
+                image, 
+                "stockTotal", 
+                "categoryId", 
+                "pricePerDay"
+                ) VALUES
+                    ($1,$2,$3,$4,$5)`,
+                [name, image, stockTotal, categoryId, pricePerDay]);
+
+        return res.sendStatus(STATUS_CODE.CREATED);
+
+    } catch (error) {
+        console.error(error);
+        return res.sendStatus(STATUS_CODE.SERVER_ERROR);
+    }
+
+}
+
+
+export { getGames, postGames }
