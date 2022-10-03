@@ -80,4 +80,25 @@ async function postCustomers(req, res) {
 }
 
 
-export { getCustomers, getCustomersId, postCustomers }
+async function putCustomerId(req, res) {
+
+    const { id } = req.params;
+    const { name, phone, cpf, birthday } = res.locals.customer;
+
+    try {
+
+        connection
+            .query(`UPDATE customers 
+                    SET name = $1, phone = $2, cpf = $3, birthday = $4
+                    WHERE id = $5`,
+                [name, phone, cpf, birthday, id]);
+        return res.sendStatus(STATUS_CODE.OK);
+
+    } catch (error) {
+        console.log(error);
+        return res.sendStatus(STATUS_CODE.SERVER_ERROR);
+    }
+
+}
+
+export { getCustomers, getCustomersId, postCustomers, putCustomerId }
