@@ -162,12 +162,12 @@ async function postRentalsIdReturn(req, res) {
 
 
     const rent = res.locals.rent;
-    console.log(rent);
+    //console.log(rent);
     rent.returnDate = dayjs().format('YYYY-MM-DD')
 
     //console.log(rent.returnDate)
-    if (dayjs().diff(dayjs(rent.rentDate)) > 0) {
-        rent.delayFee = Math.trunc((rent.originalPrice / rent.daysRented))
+    if (dayjs().diff(dayjs(rent.rentDate).add(rent.daysRented)) > 0) {
+       d rent.delayFee = Math.trunc((rent.originalPrice / rent.daysRented))
             * Math.trunc(dayjs().diff(dayjs(rent.rentDate))
                 / (1000 * 3600 * 24)) * 2;
     }
