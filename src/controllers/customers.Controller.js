@@ -24,6 +24,31 @@ async function getCustomers(req, res) {
 
     } catch (error) {
 
+        console.log(error);
+        return res.sendStatus(STATUS_CODE.SERVER_ERROR);
+
+    }
+
+}
+
+
+async function getCustomersId(req, res) {
+
+    const { id } = req.params;
+
+    try {
+
+        const customers = await connection
+            .query('SELECT * FROM customers WHERE id = $1;', [id]);
+
+        if (!customers.rowCount) {
+            return res.sendStatus(STATUS_CODE.NOT_FOUND);
+        }
+
+        return res.status(STATUS_CODE.OK).send(customers.rows.at(0));
+
+
+    } catch (error) {
 
         console.log(error);
         return res.sendStatus(STATUS_CODE.SERVER_ERROR);
@@ -32,4 +57,4 @@ async function getCustomers(req, res) {
 
 }
 
-export { getCustomers }
+export { getCustomers, getCustomersId }
