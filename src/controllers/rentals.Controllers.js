@@ -123,4 +123,36 @@ async function getRentals(req, res) {
 
 }
 
-export { getRentals }
+async function postRentals(req, res) {
+
+    const customer = res.locals.customer;
+    const game = res.locals.game;
+    const { daysRented } = res.locals.daysRented;
+    console.log(game.pricePerDay * daysRented);
+    connection.query(`INSERT INTO rentals(
+                        "customerId", 
+                        "gameId", 
+                        "rentDate", 
+                        "daysRented", 
+                        "returnDate", 
+                        "originalPrice", 
+                        "delayFee") 
+                        VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+        [
+            customer.id,
+            game.id,
+            dayjs().format('YYYY-MM-DD'),
+            daysRented,
+            null,
+            (game.pricePerDay * daysRented),
+            null
+        ]);
+    connection
+        .query(`UPDATE games SET "stockTotal" = $1 WHERE id = $2`,
+            [game.stockTotal - 1, game.id])
+
+    return res.sendStatus(STATUS_CODE.CREATED);
+
+}
+
+export { getRentals, postRentals }
