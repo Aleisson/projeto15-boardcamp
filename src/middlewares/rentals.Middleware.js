@@ -55,9 +55,9 @@ async function postRentalsIdReturnMiddleware(req, res, next) {
             return res.sendStatus(STATUS_CODE.NOT_FOUND);
         }
 
-        // if (rent.rows.at(0).returnDate) {
-        //     return res.sendStatus(STATUS_CODE.BAD_REQUEST);
-        // }
+        if (rent.rows.at(0).returnDate) {
+            return res.sendStatus(STATUS_CODE.BAD_REQUEST);
+        }
 
         res.locals.rent = rent.rows.at(0);
         next();
