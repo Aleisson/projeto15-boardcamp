@@ -57,4 +57,27 @@ async function getCustomersId(req, res) {
 
 }
 
-export { getCustomers, getCustomersId }
+async function postCustomers(req, res) {
+
+    const { name, phone, cpf, birthday } = res.locals.customer;
+
+    try {
+
+        connection
+            .query(`INSERT INTO 
+                customers(name, phone, cpf, birthday) 
+                    VALUES ( $1, $2, $3, $4);`,
+                [name, phone, cpf, birthday]);
+
+        res.sendStatus(STATUS_CODE.CREATED);
+
+    } catch (error) {
+        console.log(error);
+        return res.sendStatus(STATUS_CODE.SERVER_ERROR);
+    }
+
+
+}
+
+
+export { getCustomers, getCustomersId, postCustomers }
